@@ -79,6 +79,5 @@ with gr.Blocks() as demo:
     )
     btn.click(fn=create_map_with_route, outputs=map_display)
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 7860))
-    demo.launch(server_name="localhost", server_port=port)
+# 🔥 이 줄 추가 (Azure가 찾는 WSGI 객체)
+app = demo.server_app
