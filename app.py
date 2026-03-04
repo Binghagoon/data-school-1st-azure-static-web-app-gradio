@@ -79,5 +79,5 @@ with gr.Blocks() as demo:
     )
     btn.click(fn=create_map_with_route, outputs=map_display)
 
-# 🔥 이 줄 추가 (Azure가 찾는 WSGI 객체)
-app = demo.server_app
+if __name__ == "__main__":
+    demo.launch(server_name="0.0.0.0", server_port=8000)
