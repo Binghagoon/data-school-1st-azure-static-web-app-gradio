@@ -57,17 +57,18 @@ def create_map_with_route():
         initMarkers({shelter_js_string});
     </script>
     """
+    return map_html
 
-    return f"""
-    <iframe 
-        srcdoc="{map_html.replace('"', '&quot;')}" 
-        width="100%" 
-        height="650px" 
-        style="border:none;"
-        sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-        allow="geolocation"
-    ></iframe>
-    """
+    # return f"""
+    # <iframe
+    #     srcdoc="{map_html.replace('"', '&quot;')}"
+    #     width="100%"
+    #     height="650px"
+    #     style="border:none;"
+    #     sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+    #     allow="geolocation"
+    # ></iframe>
+    # """
 
 
 with gr.Blocks() as demo:
