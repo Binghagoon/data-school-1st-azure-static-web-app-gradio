@@ -1,6 +1,5 @@
 import psycopg2
 import gradio as gr
-import requests
 import os
 
 # 1. DB 접속 설정
@@ -10,8 +9,9 @@ DB_CONFIG = {
     "user": "azure_root",
     "password": "qwer1234!",
     "port": "5432",
-    "sslmode": "require"
+    "sslmode": "require",
 }
+
 
 def get_shelter_data_from_db():
     try:
@@ -31,11 +31,12 @@ def get_shelter_data_from_db():
         print(f"❌ DB 에러: {e}")
         return []
 
+
 def create_map_with_route():
     shelters = get_shelter_data_from_db()
     if not shelters:
         return "<h3>데이터 로드 실패</h3>"
-    
+
     shelter_list_js = []
     for s in shelters:
         name = str(s[0]).replace("'", "\\'")
@@ -43,7 +44,7 @@ def create_map_with_route():
     shelter_js_string = "[" + ",".join(shelter_list_js) + "]"
 
     # 📂 [핵심] 자바스크립트 파일을 읽어옵니다.
-    with open('map_replay.js', 'r', encoding='utf-8') as f:
+    with open("map_replay.js", "r", encoding="utf-8") as f:
         js_code = f.read()
 
     # 파이썬 f-string 대신 문자열 결합을 써서 중괄호 충돌을 피합니다.
@@ -56,7 +57,7 @@ def create_map_with_route():
         initMarkers({shelter_js_string});
     </script>
     """
-    
+
     return f"""
     <iframe 
         srcdoc="{map_html.replace('"', '&quot;')}" 
@@ -68,11 +69,16 @@ def create_map_with_route():
     ></iframe>
     """
 
+
 with gr.Blocks() as demo:
     gr.Markdown("# 👵 어르신 안심 쉼터 - 실시간 도보 길안내")
     gr.Markdown("아래 버튼을 누르면 길안내가 시작됩니다.")
     btn = gr.Button("🏠 내 주변 쉼터 찾기", variant="primary")
-    map_display = gr.HTML("<div style='height:650px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;'>서비스 시작 버튼을 눌러주세요</div>")
+    map_display = gr.HTML(
+        "<div style='height:650px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;'>서비스 시작 버튼을 눌러주세요</div>"
+    )
     btn.click(fn=create_map_with_route, outputs=map_display)
 
-demo.launch()
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 7860))
+    demo.launch(server_name="localhost", server_port=port)
